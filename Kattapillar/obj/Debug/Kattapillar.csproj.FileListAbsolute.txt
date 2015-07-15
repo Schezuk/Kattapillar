@@ -1,0 +1,9 @@
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Debug\Kattapillar.exe
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Debug\Kattapillar.pdb
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Debug\CSkin.dll
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.csprojResolveAssemblyReference.cache
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.Properties.Resources.resources
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.csproj.GenerateResource.Cache
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.exe
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.pdb
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Debug\Kattapillar.Form1.resources
