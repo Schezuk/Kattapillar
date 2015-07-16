@@ -50,7 +50,6 @@
     <Compile Include="Class\BaseBook.cs" />
     <Compile Include="Class\LKDiscuzBook.cs" />
     <Compile Include="Class\LKWenKuBook.cs" />
-    <Compile Include="Class\Model\LKDiscuzModel.cs" />
     <Compile Include="Class\Packer.cs" />
     <Compile Include="Class\WenKuBook.cs" />
     <Compile Include="Form1.cs">
@@ -83,6 +82,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
