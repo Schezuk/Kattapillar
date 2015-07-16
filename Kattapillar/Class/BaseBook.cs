@@ -32,15 +32,15 @@ namespace VShawnEpub
             MainURL = mainURL;
             OutPutDir = outPutDir;
         }
+        /// <summary>
+        /// 根据网址获取网页html
+        /// </summary>
         public abstract void Add(string url);
         /// <summary>
         /// 所有书本完成事件
         /// </summary>
         public abstract event EventHandler EvenAllCompleted;
 
-        /// <summary>
-        /// 根据网址获取网页html
-        /// </summary>
         public void OutPutTxt(string floderPath)
         {
             using (StreamWriter sw = new StreamWriter(floderPath + this.Title + ".txt", false, Encoding.UTF8))

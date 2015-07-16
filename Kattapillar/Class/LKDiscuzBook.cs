@@ -11,19 +11,35 @@ namespace VShawnEpub.Discuz
 {
     public class LKDiscuzBook:BaseBook
     {
+        /// <summary>
+        /// 楼主是谁
+        /// </summary>
         public string Master;
         //public List<Floor> Floors;
         protected List<string> URLs;
+        /// <summary>
+        /// 初始化本类，设置书本标题，主页面，txt输出页面
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="mainURL"></param>
+        /// <param name="outPutDir"></param>
         public LKDiscuzBook(string title, string mainURL,string outPutDir) : base(title, mainURL,outPutDir)
         {
             URLs = new List<string>();
-            Master = ""; 
-            EvenAllCompleted+= delegate(object sender, EventArgs args)
+            Master = "";
+            EvenAllCompleted += delegate(object sender, EventArgs args)
             {
                 OutPutTxt(OutPutDir);
             };
         }
+        /// <summary>
+        /// 所有工作完成事件，表示可以输出TXT了。
+        /// </summary>
         public override event EventHandler EvenAllCompleted;
+        /// <summary>
+        /// 添加一个页面，并分析
+        /// </summary>
+        /// <param name="url">页面URL</param>
         public override void Add(string url)
         {
             WebBrowser wb = new WebBrowser();
@@ -75,7 +91,6 @@ namespace VShawnEpub.Discuz
                 //处理LK外链图片(或者全链)
                 content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>http://[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]$1\r\n", RegexOptions.IgnoreCase);
                 //处理LK内链图
-                //content = Regex.Replace(content, @"<ignore_js_op>[\s\S]*?(<img[\s\S]*?>)[\s\S]*?</ignore_js_op>", "$1", RegexOptions.IgnoreCase);
                 //将<ignore_js_op>中内容只保留img标签
                 content = Regex.Replace(content, @"<ignore_js_op>[\s\S]*?<img[\s\S]*?zoomfile=""?([\s\S]*?)""?\s[\s\S]*?>[\s\S]*?</ignore_js_op>", "\r\n[IMG]http://www.lightnovel.cn/$1\r\n", RegexOptions.IgnoreCase);
                 content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]http://www.lightnovel.cn/$1\r\n", RegexOptions.IgnoreCase);
@@ -102,6 +117,25 @@ namespace VShawnEpub.Discuz
                     }
                 }
             }
+        }
+        /// <summary>
+        /// 获得书本的名称
+        /// </summary>
+        /// <param name="webtitle"></param>
+        /// <returns></returns>
+        public static string GetBookName(string webtitle)
+        {
+
+            if (webtitle.IndexOf("-轻之国度") > 0)
+            {
+                webtitle = webtitle.Substring(0, webtitle.IndexOf("-轻之国度"));
+            }
+            if (webtitle.IndexOf(" - 轻之国度") > 0)
+            {
+                webtitle = webtitle.Substring(0, webtitle.IndexOf(" - 轻之国度"));
+            }
+            webtitle = webtitle.Replace(@"/", "").Replace(@"\", "").Replace("?", "").Replace("*", "").Replace("<", "").Replace(">", "").Replace("|", "").Replace(":", "").Replace("\"", "");
+            return webtitle;
         }
     }
 }
