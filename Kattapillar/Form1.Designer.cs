@@ -33,6 +33,7 @@
             this.skinButton1 = new CCWin.SkinControl.SkinButton();
             this.skinButton2 = new CCWin.SkinControl.SkinButton();
             this.skinButton3 = new CCWin.SkinControl.SkinButton();
+            this.skinButton4 = new CCWin.SkinControl.SkinButton();
             this.SuspendLayout();
             // 
             // webBrowser1
@@ -53,7 +54,7 @@
             this.tbUrl.Name = "tbUrl";
             this.tbUrl.Size = new System.Drawing.Size(713, 19);
             this.tbUrl.TabIndex = 1;
-            this.tbUrl.Text = "http://www.lightnovel.cn/thread-826298-1-2.html";
+            this.tbUrl.Text = "http://www.lightnovel.cn/thread-825316-1-1.html";
             this.tbUrl.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
             this.tbUrl.WaterFont = new System.Drawing.Font("微软雅黑", 8.5F);
             this.tbUrl.WaterText = "";
@@ -98,7 +99,7 @@
             this.skinButton3.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.skinButton3.DownBack = null;
             this.skinButton3.GlowColor = System.Drawing.Color.Gray;
-            this.skinButton3.Location = new System.Drawing.Point(610, 81);
+            this.skinButton3.Location = new System.Drawing.Point(764, 92);
             this.skinButton3.MouseBack = null;
             this.skinButton3.Name = "skinButton3";
             this.skinButton3.NormlBack = null;
@@ -108,6 +109,23 @@
             this.skinButton3.UseVisualStyleBackColor = false;
             this.skinButton3.Click += new System.EventHandler(this.skinButton3_Click);
             // 
+            // skinButton4
+            // 
+            this.skinButton4.BackColor = System.Drawing.Color.Transparent;
+            this.skinButton4.BaseColor = System.Drawing.Color.DarkGreen;
+            this.skinButton4.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.skinButton4.DownBack = null;
+            this.skinButton4.GlowColor = System.Drawing.Color.Gray;
+            this.skinButton4.Location = new System.Drawing.Point(378, 71);
+            this.skinButton4.MouseBack = null;
+            this.skinButton4.Name = "skinButton4";
+            this.skinButton4.NormlBack = null;
+            this.skinButton4.Size = new System.Drawing.Size(75, 23);
+            this.skinButton4.TabIndex = 5;
+            this.skinButton4.Text = "测试4";
+            this.skinButton4.UseVisualStyleBackColor = false;
+            this.skinButton4.Click += new System.EventHandler(this.skinButton4_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -115,6 +133,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackShade = false;
             this.ClientSize = new System.Drawing.Size(951, 508);
+            this.Controls.Add(this.skinButton4);
             this.Controls.Add(this.skinButton3);
             this.Controls.Add(this.skinButton2);
             this.Controls.Add(this.skinButton1);
@@ -142,6 +161,7 @@
         private CCWin.SkinControl.SkinButton skinButton1;
         private CCWin.SkinControl.SkinButton skinButton2;
         private CCWin.SkinControl.SkinButton skinButton3;
+        private CCWin.SkinControl.SkinButton skinButton4;
     }
 }
 

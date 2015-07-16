@@ -10,37 +10,89 @@ namespace VShawnEpub
 {
     public abstract class BaseBook
     {
+        /// <summary>
+        /// 小说名称
+        /// </summary>
         public string Title;
-
-        private string author;
-        public string Author
-        {
-            get { return author; }
-            set { if (author == "") author = value; }
-        }
+        /// <summary>
+        /// 小说作者
+        /// </summary>
+        public string Author;
+        /// <summary>
+        /// 原始Html
+        /// </summary>
         public List<string> Htmls;
+        /// <summary>
+        /// 处理后的Txt
+        /// </summary>
         public List<string> Txts;
+        /// <summary>
+        /// 书本主页
+        /// </summary>
         public string MainURL;
         public string Host;
+        /// <summary>
+        /// 最终输出路径
+        /// </summary>
         public string OutPutDir;
+
+        public BookStatus Status = BookStatus.NotInit;
+        //浏览器
+        /// <summary>
+        /// 浏览器序列，用于预加载网页
+        /// </summary>
+        public List<WebBrowser> Browsers;
+        /// <summary>
+        /// 浏览器创建序列指针
+        /// </summary>
+        public int BroswersLodedIndex = 0;
+        /// <summary>
+        /// 浏览器使用序列指针
+        /// </summary>
+        public int BroswersUsingIndex = 0;
         public BaseBook(string title, string mainURL,string outPutDir)
         {
             Txts = new List<string>();
             Htmls = new List<string>();
+            Browsers = new List<WebBrowser>();
+            BroswersLodedIndex = 0;
+            BroswersUsingIndex = 0;
+
+            Initialize(title, mainURL, outPutDir);
+        }
+        public BaseBook()
+        {
+            Txts = new List<string>();
+            Htmls = new List<string>();
+            Browsers = new List<WebBrowser>();
+            BroswersLodedIndex = 0;
+        }
+
+        /// <summary>
+        /// 手动初始化类
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="mainURL"></param>
+        /// <param name="outPutDir"></param>
+        public void Initialize(string title, string mainURL, string outPutDir)
+        {
+            Txts = new List<string>();
+            Htmls = new List<string>();
+            BroswersUsingIndex = 0;
             Host = "";
             Title = title;
             MainURL = mainURL;
             OutPutDir = outPutDir;
+            Status = BookStatus.Inited;
         }
         /// <summary>
         /// 根据网址获取网页html
         /// </summary>
         public abstract void Add(string url);
         /// <summary>
-        /// 所有书本完成事件
+        /// 所有书本完成事件，其响应为输出Txt
         /// </summary>
         public abstract event EventHandler EvenAllCompleted;
-
         public void OutPutTxt(string floderPath)
         {
             using (StreamWriter sw = new StreamWriter(floderPath + this.Title + ".txt", false, Encoding.UTF8))
@@ -53,8 +105,24 @@ namespace VShawnEpub
                 }
                 sw.Close();
             }
-        }  
-        protected string getRegEx(string str, string pattern,string get = "", RegexOptions o = RegexOptions.IgnoreCase)
+        }
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// 获得一个正则表达式的匹配
+        /// </summary>
+        /// <param name="str">原始字符串</param>
+        /// <param name="pattern">正则表达式</param>
+        /// <param name="get">$1 $2...表示获得第几个()匹配</param>
+        /// <param name="o">匹配模式</param>
+        /// <returns></returns>
+        protected static string getRegEx(string str, string pattern,string get = "", RegexOptions o = RegexOptions.IgnoreCase)
         {
             Match m = Regex.Match(str, pattern, o);
             ThrowMissMatch(m);
@@ -64,7 +132,14 @@ namespace VShawnEpub
             }
             return m.ToString();
         }
-        protected MatchCollection getRegExs(string str, string pattern, RegexOptions o = RegexOptions.IgnoreCase)
+        /// <summary>
+        /// 获得多个正则表达式的匹配
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="pattern"></param>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        protected static MatchCollection getRegExs(string str, string pattern, RegexOptions o = RegexOptions.IgnoreCase)
         {
             MatchCollection rs = Regex.Matches(str, pattern, o);
             ThrowMissMatch(rs);
@@ -122,6 +197,15 @@ namespace VShawnEpub
             //Htmlstring.Replace("\r", "");
 
             return Htmlstring;
+        }
+
+        public enum BookStatus
+        {
+            NotInit,
+            Inited,
+            WaitingBroswer,
+            Running,
+            Completed
         }
     }
 }

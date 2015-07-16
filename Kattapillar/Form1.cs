@@ -7,63 +7,64 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using CCWin;
+using VShawnEpub;
 
 namespace Kattapillar
 {
     public partial class Form1 : CCSkinMain
     {
-        /// <summary>
-        /// 浏览器序列，用于预加载网页
-        /// </summary>
-        private List<WebBrowser> browsers;
-        /// <summary>
-        /// 浏览器序列指针
-        /// </summary>
-        private int broswersIndex = 0;
+        private VShawnEpub.Discuz.LKDiscuzBook lkdb;
 
+        
         public Form1()
         {
             InitializeComponent();
         }
         private void skinButton1_Click(object sender, EventArgs e)
         {
-            broswersIndex = 0;
-            browsers = new List<WebBrowser>();
-            browsers.Add(webBrowser1);
-            webBrowser1.Navigate(tbUrl.Text);
-            string next = "";
-            if (tbUrl.Text.IndexOf("www.lightnovel.cn") > 0)
+            //skinButton1.Enabled = false;
+
+
+            if (tbUrl.Text.IndexOf("www.lightnovel.cn/thread") > 0 || tbUrl.Text.IndexOf("www.lightnovel.cn/forum.php?mod=viewthread") > 0)
             {
+                lkdb = new VShawnEpub.Discuz.LKDiscuzBook();
+                lkdb.Browsers.Add(webBrowser1);
+                string url = VShawnEpub.Discuz.LKDiscuzBook.GetTrueUrl(tbUrl.Text);
+                lkdb.Browsers[lkdb.BroswersLodedIndex].Navigate(url);
+                lkdb.Browsers[lkdb.BroswersLodedIndex].Navigated += delegate(object o, WebBrowserNavigatedEventArgs args)
+                {
+                    ////预加载帖子第二页
+                    //if (lkdb.Browsers[lkdb.BroswersLodedIndex].ReadyState == WebBrowserReadyState.Interactive)
+                    //{
+                    //    if ((lkdb.BroswersLodedIndex + 1) <= lkdb.Browsers.Count)
+                    //    {
+                    //        lkdb.BroswersLodedIndex++;
+                    //        WebBrowser wb = new WebBrowser();
+                    //        wb.Navigate(url + (lkdb.Browsers.Count + 1));
+                    //        lkdb.Browsers.Add(wb);
+                    //    }
+                    //}
+                };
             }
             else if (tbUrl.Text.IndexOf("lknovel.lightnovel.cn") > 0)
             {
-                
+
             }
-
-
-            webBrowser1.Navigated += delegate(object o, WebBrowserNavigatedEventArgs args)
-            {
-                if (webBrowser1.ReadyState != WebBrowserReadyState.Loaded)
-                {
-                    WebBrowser wb = new WebBrowser();
-                    wb.Navigate(next);
-                    browsers.Add(wb);
-                }
-            };
         }
 
         private void skinButton2_Click(object sender, EventArgs e)
         {
-            //开始爬取
-            if (webBrowser1.ReadyState != WebBrowserReadyState.Complete)
-            {
+            lkdb.BroswersUsingIndex = 0;
+            string title = VShawnEpub.Discuz.LKDiscuzBook.GetBookName(webBrowser1.DocumentTitle);
+            lkdb.Initialize(title, lkdb.Browsers[lkdb.BroswersUsingIndex].Url.AbsoluteUri, @"C:\新建文件夹\");
+            //开始
+            if (!VShawnEpub.Discuz.LKDiscuzBook.IsBroswerOK(lkdb.Browsers[lkdb.BroswersUsingIndex]))
+            { 
                 MessageBox.Show("请先加载网页!");
                 return;
             }
-            string html = webBrowser1.DocumentText;
-            string title = VShawnEpub.Discuz.LKDiscuzBook.GetBookName(webBrowser1.DocumentTitle);
-            VShawnEpub.Discuz.LKDiscuzBook lkdb = new VShawnEpub.Discuz.LKDiscuzBook(title, tbUrl.Text, @"C:\新建文件夹\");
-            lkdb.Add(tbUrl.Text, html);
+            lkdb.Status = VShawnEpub.Discuz.LKDiscuzBook.BookStatus.Running;
+            lkdb.Start();
         }
 
         private void skinButton3_Click(object sender, EventArgs e)
@@ -71,6 +72,10 @@ namespace Kattapillar
             WebBrowser wb = new WebBrowser();
             wb.Navigate(tbUrl.Text);
             wb.Navigated+= delegate(object o, WebBrowserNavigatedEventArgs args) { if(wb.ReadyState == WebBrowserReadyState.Complete)MessageBox.Show(wb.Text); };
+        }
+
+        private void skinButton4_Click(object sender, EventArgs e)
+        {
         }
     }
 }
