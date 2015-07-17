@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VShawnEpub
+namespace VShawnEpub.Wenku
 {
     public abstract class WenKuBook:BaseBook
     {

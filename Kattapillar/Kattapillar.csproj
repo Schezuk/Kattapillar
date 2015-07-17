@@ -47,11 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\BaseBook.cs" />
-    <Compile Include="Class\LKDiscuzBook.cs" />
-    <Compile Include="Class\LKWenKuBook.cs" />
-    <Compile Include="Class\Packer.cs" />
-    <Compile Include="Class\WenKuBook.cs" />
+    <Compile Include="Class\BookSource\BaseBook.cs" />
+    <Compile Include="Class\BookSource\LKDiscuzBook.cs" />
+    <Compile Include="Class\BookSource\LKWenKuBook.cs" />
+    <Compile Include="Class\BookSource\Packer.cs" />
+    <Compile Include="Class\BookSource\WenKuBook.cs" />
+    <Compile Include="Class\EpubModel\Capater.cs" />
+    <Compile Include="Class\EpubModel\Image.cs" />
+    <Compile Include="Class\Version.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -33,17 +33,17 @@ namespace Kattapillar
                 lkdb.Browsers[lkdb.BroswersLodedIndex].Navigate(url);
                 lkdb.Browsers[lkdb.BroswersLodedIndex].Navigated += delegate(object o, WebBrowserNavigatedEventArgs args)
                 {
-                    ////预加载帖子第二页
-                    //if (lkdb.Browsers[lkdb.BroswersLodedIndex].ReadyState == WebBrowserReadyState.Interactive)
-                    //{
-                    //    if ((lkdb.BroswersLodedIndex + 1) <= lkdb.Browsers.Count)
-                    //    {
-                    //        lkdb.BroswersLodedIndex++;
-                    //        WebBrowser wb = new WebBrowser();
-                    //        wb.Navigate(url + (lkdb.Browsers.Count + 1));
-                    //        lkdb.Browsers.Add(wb);
-                    //    }
-                    //}
+                    //预加载帖子第二页
+                    if (lkdb.Browsers[lkdb.BroswersLodedIndex].ReadyState == WebBrowserReadyState.Interactive)
+                    {
+                        if ((lkdb.BroswersLodedIndex + 1) <= lkdb.Browsers.Count)
+                        {
+                            lkdb.BroswersLodedIndex++;
+                            WebBrowser wb = new WebBrowser();
+                            wb.Navigate(url + (lkdb.Browsers.Count + 1));
+                            lkdb.Browsers.Add(wb);
+                        }
+                    }
                 };
             }
             else if (tbUrl.Text.IndexOf("lknovel.lightnovel.cn") > 0)
