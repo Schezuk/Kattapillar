@@ -5,27 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
+using VShawnEpub.Model;
 
 namespace VShawnEpub
 {
     public abstract class BaseBook
     {
-        /// <summary>
-        /// 小说名称
-        /// </summary>
-        public string Title;
-        /// <summary>
-        /// 小说作者
-        /// </summary>
-        public string Author;
-        /// <summary>
-        /// 原始Html
-        /// </summary>
-        public List<string> Htmls;
-        /// <summary>
-        /// 处理后的Txt
-        /// </summary>
-        public List<string> Txts;
+        public EpubModel Epub;
         /// <summary>
         /// 书本主页
         /// </summary>
@@ -50,10 +36,9 @@ namespace VShawnEpub
         /// 浏览器使用序列指针
         /// </summary>
         public int BroswersUsingIndex = 0;
+
         public BaseBook(string title, string mainURL,string outPutDir)
         {
-            Txts = new List<string>();
-            Htmls = new List<string>();
             Browsers = new List<WebBrowser>();
             BroswersLodedIndex = 0;
             BroswersUsingIndex = 0;
@@ -62,8 +47,6 @@ namespace VShawnEpub
         }
         public BaseBook()
         {
-            Txts = new List<string>();
-            Htmls = new List<string>();
             Browsers = new List<WebBrowser>();
             BroswersLodedIndex = 0;
         }
@@ -74,38 +57,32 @@ namespace VShawnEpub
         /// <param name="title"></param>
         /// <param name="mainURL"></param>
         /// <param name="outPutDir"></param>
-        public void Initialize(string title, string mainURL, string outPutDir)
+        public virtual void Initialize(string title, string mainURL, string outPutDir)
         {
-            Txts = new List<string>();
-            Htmls = new List<string>();
+            Epub = new EpubModel();
+            Epub.Title = title;
             BroswersUsingIndex = 0;
             Host = "";
-            Title = title;
             MainURL = mainURL;
             OutPutDir = outPutDir;
             Status = BookStatus.Inited;
         }
         /// <summary>
-        /// 根据网址获取网页html
+        /// 添加一个页面，并分析
         /// </summary>
-        public abstract void Add(string url);
+        /// <param name="url">页面URL</param>
+        /// <param name="html">页面HTML</param>
+        public abstract void Add(string url, string html);
         /// <summary>
         /// 所有书本完成事件，其响应为输出Txt
         /// </summary>
         public abstract event EventHandler EvenAllCompleted;
-        public void OutPutTxt(string floderPath)
-        {
-            using (StreamWriter sw = new StreamWriter(floderPath + this.Title + ".txt", false, Encoding.UTF8))
-            {
-                for (int i = 0; i < Txts.Count; i++)
-                {
-                    if(i != 0)
-                        sw.Write("\r\n\r\n\r\n\r\n");
-                    sw.Write(Txts[i]);
-                }
-                sw.Close();
-            }
-        }
+        /// <summary>
+        /// 判断浏览器是否加载完成
+        /// </summary>
+        /// <param name="wb"></param>
+        /// <returns></returns>
+        public abstract bool IsBroswerOK(WebBrowser wb);
 
 
 
@@ -122,10 +99,15 @@ namespace VShawnEpub
         /// <param name="get">$1 $2...表示获得第几个()匹配</param>
         /// <param name="o">匹配模式</param>
         /// <returns></returns>
-        protected static string getRegEx(string str, string pattern,string get = "", RegexOptions o = RegexOptions.IgnoreCase)
+        protected static string getRegEx(string str, string pattern, string get = "", RegexOptions o = RegexOptions.IgnoreCase, bool ThrowException = true)
         {
             Match m = Regex.Match(str, pattern, o);
-            ThrowMissMatch(m);
+            if (ThrowException)
+                ThrowMissMatch(m);
+            if (!m.Success)
+            {
+                return "";
+            }
             if (get != "")
             {
                 return m.Result(get);
@@ -139,10 +121,11 @@ namespace VShawnEpub
         /// <param name="pattern"></param>
         /// <param name="o"></param>
         /// <returns></returns>
-        protected static MatchCollection getRegExs(string str, string pattern, RegexOptions o = RegexOptions.IgnoreCase)
+        protected static MatchCollection getRegExs(string str, string pattern, RegexOptions o = RegexOptions.IgnoreCase, bool ThrowException = true)
         {
             MatchCollection rs = Regex.Matches(str, pattern, o);
-            ThrowMissMatch(rs);
+            if (ThrowException)
+                ThrowMissMatch(rs);
             return rs;
         }
         private static void ThrowMissMatch(Match m)
@@ -162,12 +145,15 @@ namespace VShawnEpub
             }
         }
         /// <summary>
-        /// 删除Html 将img标签替换为一行url
+        /// 删除Html 将img标签替换为一行url，形如[IMG]http://........
         /// </summary>
         /// <param name="Htmlstring"></param>
         /// <returns></returns>
         protected string NoHTML(string Htmlstring)
         {
+            Htmlstring = Regex.Replace(Htmlstring, "<br />", "\r\n");
+            Htmlstring = Regex.Replace(Htmlstring, "</p>", "\r\n</p>");
+            Htmlstring = Regex.Replace(Htmlstring, "</div>", "\r\n</div>");
             //图片统一格式到Txt
             Htmlstring = Regex.Replace(Htmlstring, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]$1\r\n", RegexOptions.IgnoreCase);
             //Htmlstring = Regex.Replace(Htmlstring, @"<br\s*/>", "\r", RegexOptions.IgnoreCase);
@@ -198,12 +184,29 @@ namespace VShawnEpub
 
             return Htmlstring;
         }
-
+        /// <summary>
+        /// 去除空格 nbsp /t
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected string ClearBlank(string str)
+        {
+            str = str.Trim();
+            str = str.Replace("\t", " ");
+            str = str.Replace("\r\n", " ");
+            str = str.Replace("&nbsp;", " ");
+            while (str.IndexOf("  ") >= 0)
+            {
+                str = str.Replace("  ", " ");
+            }
+            return str;
+        }
         public enum BookStatus
         {
             NotInit,
             Inited,
             WaitingBroswer,
+            BroswerCompleted,
             Running,
             Completed
         }

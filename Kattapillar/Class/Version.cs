@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Windows.Forms;
 
-namespace epubFactory
+namespace VShawnEpub
 {
     static class Version
     {

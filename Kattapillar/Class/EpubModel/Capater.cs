@@ -14,7 +14,8 @@ namespace VShawnEpub.Model
         /// 章节标题
         /// </summary>
         public string Title;
-
+        public string Url;
+        public string Html;
         private string txt;
         public string Txt
         {
@@ -28,9 +29,10 @@ namespace VShawnEpub.Model
                 return txt;
             }
         }
-
         private List<string> txtLines;
-
+        /// <summary>
+        /// 分行存储Txt
+        /// </summary>
         public List<string> TxtLines
         {
             get { return txtLines; }

@@ -1,0 +1,8 @@
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Release\Kattapillar.exe
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Release\Kattapillar.pdb
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\bin\Release\CSkin.dll
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Release\Kattapillar.Form1.resources
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Release\Kattapillar.Properties.Resources.resources
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Release\Kattapillar.csproj.GenerateResource.Cache
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Release\Kattapillar.exe
+D:\Users\Documents\WinForm\VS2013\Kattapillar\Kattapillar\obj\Release\Kattapillar.pdb

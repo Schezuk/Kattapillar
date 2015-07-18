@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VShawnEpub.Wenku
 {
     public abstract class WenKuBook:BaseBook
     {
-        public List<string> ChaptersURLs;
-        public WenKuBook(string title, string mainURL, string outPutDir) : base(title, mainURL, outPutDir)
+        public WenKuBook(): base()
         {
-            ChaptersURLs = new List<string>();
         }
+        public abstract void ProcessMainPage(string url, string html);
     }
 }

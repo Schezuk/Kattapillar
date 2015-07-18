@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 
 namespace VShawnEpub.Model
@@ -18,10 +19,19 @@ namespace VShawnEpub.Model
         /// 图片导入epub后的存储名称 不带后缀
         /// </summary>
         public string StoreName;
+
+
+        private string url;
         /// <summary>
-        /// 图片URL
+        /// 图片URL，设置后自动设置Ext
         /// </summary>
-        public string Url;
+        public string Url
+        {
+            set { url = value;
+                Ext = url.Substring(url.LastIndexOf("."));
+            }
+            get { return url; }
+        }
         /// <summary>
         /// 图片下载后地址
         /// </summary>

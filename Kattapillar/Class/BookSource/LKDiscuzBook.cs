@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using VShawnEpub.Model;
 
 namespace VShawnEpub.Discuz
 {
@@ -29,24 +30,24 @@ namespace VShawnEpub.Discuz
             Master = "";
             EvenAllCompleted += delegate(object sender, EventArgs args)
             {
-                OutPutTxt(OutPutDir);
+                Epub.OutPutTxt(OutPutDir);
             };
         }
-        /// <summary>
-        /// 初始化本类，设置书本标题，主页面，txt输出页面
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="mainURL"></param>
-        /// <param name="outPutDir"></param>
-        public LKDiscuzBook(string title, string mainURL,string outPutDir) : base(title, mainURL,outPutDir)
-        {
-            URLs = new List<string>();
-            Master = "";
-            EvenAllCompleted += delegate(object sender, EventArgs args)
-            {
-                OutPutTxt(OutPutDir);
-            };
-        }
+        ///// <summary>
+        ///// 初始化本类，设置书本标题，主页面，txt输出页面
+        ///// </summary>
+        ///// <param name="title"></param>
+        ///// <param name="mainURL"></param>
+        ///// <param name="outPutDir"></param>
+        //public LKDiscuzBook(string title, string mainURL,string outPutDir) : base(title, mainURL,outPutDir)
+        //{
+        //    URLs = new List<string>();
+        //    Master = "";
+        //    EvenAllCompleted += delegate(object sender, EventArgs args)
+        //    {
+        //        Epub.OutPutTxt(OutPutDir);
+        //    };
+        //}
         public override event EventHandler EvenAllCompleted;
         /// <summary>
         /// 开始处理数据，把网页转为txt数据
@@ -75,31 +76,14 @@ namespace VShawnEpub.Discuz
         /// 添加一个页面，并分析
         /// </summary>
         /// <param name="url">页面URL</param>
-        public override void Add(string url)
-        {
-            //WebBrowser wb = new WebBrowser();
-            //wb.DocumentCompleted += delegate(object sender, WebBrowserDocumentCompletedEventArgs args)
-            //{
-            //    if (wb.ReadyState == WebBrowserReadyState.Loaded || (wb.ReadyState == WebBrowserReadyState.Complete && wb.IsBusy == false))
-            //    {
-            //        Add(url, wb.DocumentText);
-            //    }
-            //};
-            //wb.Navigate(url);
-        }
-        /// <summary>
-        /// 添加一个页面，并分析
-        /// </summary>
-        /// <param name="url">页面URL</param>
         /// <param name="html">页面HTML</param>
-        public void Add(string url, string html)
+        public override void Add(string url, string html)
         {
             if (URLs.Contains(url))
             {
                 return;
             }
             URLs.Add(url);
-            this.Htmls.Add(html);
             MatchCollection divs = getRegExs(html, @"<div\s*id=""?post_(\d+)""?\s*>([\s\S]*?)<div\sid=""?comment_\d+");
             for (int i = 0; i < divs.Count; i++)
             {
@@ -112,10 +96,9 @@ namespace VShawnEpub.Discuz
                     EvenAllCompleted(this, null);
                     break;
                 }
-
                 string strBody = getRegEx(divs[i].ToString(), @"id=""?postmessage_\d*[\s\S]*?>([\s\S]*?)<div id=""?comment_", "$1");
                 //提取出纯文字
-                string content = getRegEx(strBody, @"([\s\S]*?)</td></tr>(</tbody>)?</table>");
+                string content = getRegEx(strBody, @"([\s\S]*?)</td></tr>(</tbody>)?</table>").Replace("\r","").Replace("\n","");
                 //content = Regex.Replace(content, "</div>", "\r\n</div>", RegexOptions.IgnoreCase);
                 //content = Regex.Replace(content, "</p>", "\r\n</p>", RegexOptions.IgnoreCase);
                 //content = Regex.Replace(content, @"<br\s*/?\s*>", "\r\n", RegexOptions.IgnoreCase);
@@ -138,9 +121,11 @@ namespace VShawnEpub.Discuz
                     content = content.Remove(0, 1);
                 while (content.EndsWith("\n") || content.EndsWith("\r"))
                     content = content.Remove(content.Length - 1, 1);
-                //Floor f = new Floor(master, divs[i].ToString(), content, URLs.Count - 1);
-                //Floors.Add(f);
-                this.Txts.Add(content);
+
+                VShawnEpub.Model.Capater c = new VShawnEpub.Model.Capater();
+                c.Txt = content;
+                base.Epub.Capaters.Add(c);
+                //this.Epub.Capaters(content);
                 //若最后一楼还是楼主的帖子，且下一页的浏览器尚未创建。
                 if (i == (divs.Count - 1) && Browsers.Count == (BroswersUsingIndex + 1))
                 {
@@ -150,9 +135,6 @@ namespace VShawnEpub.Discuz
                     wb.Navigate(nextUrl);
                     wb.DocumentCompleted += delegate(object sender, WebBrowserDocumentCompletedEventArgs args)
                     {
-                        WebBrowserReadyState w = wb.ReadyState;
-                        string h = wb.DocumentText;
-                        bool x = wb.IsBusy;
                         if (IsBroswerOK(base.Browsers[base.BroswersUsingIndex]))
                         {
                             Start();
@@ -213,7 +195,7 @@ namespace VShawnEpub.Discuz
         /// 判断浏览器是否加载完成
         /// </summary>
         /// <returns></returns>
-        public static bool IsBroswerOK(WebBrowser wb)
+        public override bool IsBroswerOK(WebBrowser wb)
         {
             string html = wb.DocumentText;
             if (wb.ReadyState == WebBrowserReadyState.Complete || html.IndexOf("闽ICP备0702546号-1") != -1)
