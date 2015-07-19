@@ -18,6 +18,7 @@ namespace VShawnEpub.Model
         /// </summary>
         public string SubTitle;
         public string Author;
+        public string Translator;
         public string Illustration;
         public List<Capater> Capaters;
         public Image CoverImg;
@@ -49,14 +50,19 @@ namespace VShawnEpub.Model
         {
             if (!Directory.Exists(floderPath))
                 Directory.CreateDirectory(floderPath);
-            using (StreamWriter sw = new StreamWriter(floderPath + this.Title + ".txt", false, Encoding.UTF8))
+            string fileName = floderPath + this.Title + ".txt";
+            if(File.Exists(fileName))
+                File.Delete(fileName);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Capaters.Count; i++)
             {
-                for (int i = 0; i < Capaters.Count; i++)
-                {
-                    if (i != 0)
-                        sw.Write("\r\n\r\n\r\n\r\n");
-                    sw.Write(Capaters[i].Txt);
-                }
+                if (i != 0)
+                    sb.Append("\r\n\r\n\r\n\r\n");
+                sb.Append(Capaters[i].Txt);
+            }
+            using (StreamWriter sw = new StreamWriter(fileName, false, Encoding.UTF8))
+            {
+                sw.Write(sb.ToString());
                 sw.Close();
             }
         }

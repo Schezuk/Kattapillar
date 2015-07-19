@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -11,6 +12,13 @@ namespace VShawnEpub
 {
     public abstract class BaseBook
     {
+        #region 浏览器内存释放相关
+        //调用系统内核，设置进程内存
+        [DllImport("KERNEL32.DLL", EntryPoint = "SetProcessWorkingSetSize", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern bool SetProcessWorkingSetSize(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
+        [DllImport("KERNEL32.DLL", EntryPoint = "GetCurrentProcess", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        internal static extern IntPtr GetCurrentProcess();
+        #endregion
         public EpubModel Epub;
         /// <summary>
         /// 书本主页
@@ -20,7 +28,7 @@ namespace VShawnEpub
         /// <summary>
         /// 最终输出路径
         /// </summary>
-        public string OutPutDir;
+        public string OutPutDir = @"C:\新建文件夹\";
 
         public BookStatus Status = BookStatus.NotInit;
         //浏览器
@@ -45,12 +53,6 @@ namespace VShawnEpub
 
             Initialize(title, mainURL, outPutDir);
         }
-        public BaseBook()
-        {
-            Browsers = new List<WebBrowser>();
-            BroswersLodedIndex = 0;
-        }
-
         /// <summary>
         /// 手动初始化类
         /// </summary>
@@ -65,14 +67,22 @@ namespace VShawnEpub
             Host = "";
             MainURL = mainURL;
             OutPutDir = outPutDir;
+            if(OutPutDir == "")
+                OutPutDir = @"C:\新建文件夹\";
             Status = BookStatus.Inited;
         }
+        public BaseBook()
+        {
+            Browsers = new List<WebBrowser>();
+            BroswersLodedIndex = 0;
+            Initialize("", "", "");
+        }
         /// <summary>
-        /// 添加一个页面，并分析
+        /// 处理主页，并加载后续页面
         /// </summary>
-        /// <param name="url">页面URL</param>
-        /// <param name="html">页面HTML</param>
-        public abstract void Add(string url, string html);
+        /// <param name="url"></param>
+        /// <param name="html"></param>
+        public abstract void ProcessMainPage(string url, string html);
         /// <summary>
         /// 所有书本完成事件，其响应为输出Txt
         /// </summary>
@@ -98,6 +108,7 @@ namespace VShawnEpub
         /// <param name="pattern">正则表达式</param>
         /// <param name="get">$1 $2...表示获得第几个()匹配</param>
         /// <param name="o">匹配模式</param>
+        /// <param name="ThrowException">是否抛出异常</param>
         /// <returns></returns>
         protected static string getRegEx(string str, string pattern, string get = "", RegexOptions o = RegexOptions.IgnoreCase, bool ThrowException = true)
         {
@@ -149,13 +160,17 @@ namespace VShawnEpub
         /// </summary>
         /// <param name="Htmlstring"></param>
         /// <returns></returns>
-        protected string NoHTML(string Htmlstring)
+        protected string NoHTML(string Htmlstring,string host = "")
         {
+            Htmlstring = Htmlstring.Replace("\t", " ");
+            Htmlstring = Htmlstring.Replace("\r", "");
+            Htmlstring = Htmlstring.Replace("\n", "");
             Htmlstring = Regex.Replace(Htmlstring, "<br />", "\r\n");
             Htmlstring = Regex.Replace(Htmlstring, "</p>", "\r\n</p>");
-            Htmlstring = Regex.Replace(Htmlstring, "</div>", "\r\n</div>");
+            //Htmlstring = Regex.Replace(Htmlstring, "</div>", "\r\n</div>");
             //图片统一格式到Txt
-            Htmlstring = Regex.Replace(Htmlstring, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]$1\r\n", RegexOptions.IgnoreCase);
+            Htmlstring = Regex.Replace(Htmlstring, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>http://[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]$1\r\n", RegexOptions.IgnoreCase);
+            Htmlstring = Regex.Replace(Htmlstring, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]" + host + "$1\r\n", RegexOptions.IgnoreCase);
             //Htmlstring = Regex.Replace(Htmlstring, @"<br\s*/>", "\r", RegexOptions.IgnoreCase);
             //删除脚本
             //Htmlstring = Regex.Replace(Htmlstring, @"<.*>", "", RegexOptions.IgnoreCase);
@@ -177,12 +192,20 @@ namespace VShawnEpub
             Htmlstring = Regex.Replace(Htmlstring, @"&(copy|#169);", "\xa9", RegexOptions.IgnoreCase);
             Htmlstring = Regex.Replace(Htmlstring, @"&#(\d+);", "", RegexOptions.IgnoreCase);
 
+
+
+            while (Htmlstring.IndexOf("\r\n\r\n\r\n") >= 0)
+                Htmlstring = Htmlstring.Replace("\r\n\r\n\r\n", "\r\n\r\n");
+            while (Htmlstring.StartsWith("\n") || Htmlstring.StartsWith("\r"))
+                Htmlstring = Htmlstring.Remove(0, 1);
+            while (Htmlstring.EndsWith("\n") || Htmlstring.EndsWith("\r"))
+                Htmlstring = Htmlstring.Remove(Htmlstring.Length - 1, 1);
             //Htmlstring.Replace("<", "");
             //Htmlstring.Replace(">", "");
             //Htmlstring = Regex.Replace(Htmlstring, @"([\r])[\s]+", "", RegexOptions.IgnoreCase);
             //Htmlstring.Replace("\r", "");
 
-            return Htmlstring;
+            return Htmlstring.Trim();
         }
         /// <summary>
         /// 去除空格 nbsp /t
@@ -193,7 +216,8 @@ namespace VShawnEpub
         {
             str = str.Trim();
             str = str.Replace("\t", " ");
-            str = str.Replace("\r\n", " ");
+            str = str.Replace("\r", " ");
+            str = str.Replace("\n", " ");
             str = str.Replace("&nbsp;", " ");
             while (str.IndexOf("  ") >= 0)
             {
