@@ -29,8 +29,19 @@ namespace VShawnEpub
         /// 最终输出路径
         /// </summary>
         public string OutPutDir = @"C:\新建文件夹\";
-
+        /// <summary>
+        /// 书本处理状态
+        /// </summary>
         public BookStatus Status = BookStatus.NotInit;
+        public enum BookStatus
+        {
+            NotInit,
+            Inited,
+            WaitingBroswer,
+            BroswerCompleted,
+            Running,
+            Completed
+        }
         //浏览器
         /// <summary>
         /// 浏览器序列，用于预加载网页
@@ -44,6 +55,7 @@ namespace VShawnEpub
         /// 浏览器使用序列指针
         /// </summary>
         public int BroswersUsingIndex = 0;
+
 
         public BaseBook(string title, string mainURL,string outPutDir)
         {
@@ -93,6 +105,55 @@ namespace VShawnEpub
         /// <param name="wb"></param>
         /// <returns></returns>
         public abstract bool IsBroswerOK(WebBrowser wb);
+
+
+
+
+
+
+        ///工作进度规则
+        /// 一个页面百分数分母增加 11，其中页面加载占10，文本处理占1
+
+
+
+        //工作进度
+        public int Percentage = 0;
+        public int PercentageTotal = 0;
+
+        protected void AddPercentageTotal()
+        {
+            PercentageTotal += 11;
+        }
+        protected void AddPercentage(PercentageType pt)
+        {
+            if (pt == PercentageType.PageLoaded)
+                Percentage += 10;
+            else
+                Percentage += 1;
+        }
+
+        /// <summary>
+        /// 获得工作进度
+        /// </summary>
+        public int GetPercentage()
+        {
+            if (Status == BookStatus.Inited || PercentageTotal == 0)
+                return 0;
+            if (Status == BookStatus.Completed || Percentage >= PercentageTotal)
+                return 100;
+            int p = (int)((Percentage/(double)PercentageTotal)*100);
+            return p;
+        }
+        protected enum PercentageType
+        {
+            PageLoaded,
+            PageProcessed
+        }
+
+
+
+
+
 
 
 
@@ -224,15 +285,6 @@ namespace VShawnEpub
                 str = str.Replace("  ", " ");
             }
             return str;
-        }
-        public enum BookStatus
-        {
-            NotInit,
-            Inited,
-            WaitingBroswer,
-            BroswerCompleted,
-            Running,
-            Completed
         }
     }
 }

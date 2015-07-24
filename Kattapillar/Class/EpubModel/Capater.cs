@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VShawnEpub.Model
 {
@@ -21,8 +23,18 @@ namespace VShawnEpub.Model
         {
             set
             {
-                txt = value;
-                txtLines = new List<string>(txt.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+                txtLines = new List<string>(value.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
+                if (Index != 0)
+                {
+                    List<string> tmp = new List<string>(txtLines);
+                    for (int i = 0; i < tmp.Count; i++)
+                    {
+                        tmp[i] = "    " + tmp[i].Trim();
+                    }
+                    txt = string.Join("\r\n", tmp.ToArray());
+                }
+                else
+                    txt = value;
             }
             get
             {

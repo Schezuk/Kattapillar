@@ -35,6 +35,7 @@ namespace VShawnEpub.Wenku
                     strBody = Regex.Replace(strBody, @"<h2([\s\S]*?)>([\s\S]*?)</h3>", "");
                     strBody = base.NoHTML(strBody, HOST);
                     base.Epub.Capaters[i].Txt = strBody;
+                    base.AddPercentage(PercentageType.PageProcessed); 
                 }
                 Status = VShawnEpub.Discuz.LKDiscuzBook.BookStatus.Completed;
                 base.Epub.OutPutTxt(base.OutPutDir);
@@ -59,6 +60,7 @@ namespace VShawnEpub.Wenku
             MatchCollection matchCollection = getRegExs(div, @"<a\s?href=""(?<url>[\s\S]*?)""\s?>([\s\S]*?)<span\s?class=""lk-ellipsis"">(?<text>[\s\S]*?)</span>([\s\S]*?)</a>");
             for (int i = 0; i < matchCollection.Count; i++)
             {
+                base.AddPercentageTotal();
                 Capater c = new Capater();
                 //章标题
                 c.Index = i;
@@ -99,6 +101,8 @@ namespace VShawnEpub.Wenku
                     //清理内存
                     IntPtr pHandle = GetCurrentProcess();
                     SetProcessWorkingSetSize(pHandle, -1, -1);
+
+                    base.AddPercentage(PercentageType.PageLoaded); 
                 }
             };
             wb.Navigate(c.Url);
@@ -113,8 +117,6 @@ namespace VShawnEpub.Wenku
             base.Epub.Author = base.ClearBlank(getRegEx(html, @"<td width=""40"">作 者：</td>[\s\S]*<td><a target=""_blank"" href=""[\s\S]*"">([\s\S]*)</a></td>", "$1", RegexOptions.IgnoreCase, false));
             base.Epub.Illustration = base.ClearBlank(getRegEx(html, @"<td>插 画：</td>[\s\S]*<td>([\s\S]*)</td>[\s\S]*<td>文 库：</td>", "$1", RegexOptions.IgnoreCase, false));
         }
-
-
         /// <summary>
         /// 判断浏览器是否加载完成
         /// </summary>

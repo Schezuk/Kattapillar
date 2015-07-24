@@ -41,6 +41,7 @@ namespace VShawnEpub.Discuz
         {
             Thread t = new Thread(delegate()
             {
+                //等等浏览器加载
                 while (base.Status != BookStatus.BroswerCompleted && base.Status != BookStatus.Completed)
                     Thread.Sleep(100);
                 base.Epub.Capaters = new List<Capater>();
@@ -65,6 +66,8 @@ namespace VShawnEpub.Discuz
         /// <param name="html"></param>
         public override void ProcessMainPage(string url, string html)
         {
+            base.AddPercentageTotal();
+            base.AddPercentage(PercentageType.PageLoaded);
             URLs.Add(url);
             URLs.Add(url + "2");
             Htmls.Add(html);
@@ -78,6 +81,7 @@ namespace VShawnEpub.Discuz
         /// <param name="c"></param>
         private void CreateWB(string url)
         {
+            base.AddPercentageTotal();
             WebBrowser wb = new WebBrowser();
             base.Browsers.Add(wb);
             BroswersLodedIndex++;
@@ -93,6 +97,7 @@ namespace VShawnEpub.Discuz
                     IntPtr pHandle = GetCurrentProcess();
                     SetProcessWorkingSetSize(pHandle, -1, -1);
                     Htmls.Add(html);
+                    base.AddPercentage(PercentageType.PageLoaded);
                 }
             };
             wb.Navigate(url);
@@ -126,6 +131,7 @@ namespace VShawnEpub.Discuz
                     return false;
                 }
                 VShawnEpub.Model.Capater c = new VShawnEpub.Model.Capater();
+                c.Index = base.Epub.Capaters.Count;
                 c.Html = divs[i].ToString();
                 string strBody = getRegEx(divs[i].ToString(), @"id=""?postmessage_\d*[\s\S]*?>([\s\S]*?)<div id=""?comment_", "$1");
                 //提取出纯文字
@@ -148,9 +154,11 @@ namespace VShawnEpub.Discuz
                 //若最后一楼还是楼主的帖子
                 if (i == (divs.Count - 1))
                 {
+                    base.AddPercentage(PercentageType.PageProcessed); 
                     return true;
                 }
             }
+            base.AddPercentage(PercentageType.PageProcessed); 
             return false;
         }
 
