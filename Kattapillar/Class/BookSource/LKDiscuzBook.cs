@@ -140,11 +140,11 @@ namespace VShawnEpub.Discuz
                 content = Regex.Replace(content, @"<i\s?class=""?pstatus""?>.*?</i>", "", RegexOptions.IgnoreCase);
                 //处理img标签为[IMG]+图片URL
                 //处理LK外链图片(或者全链)
-                content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>http://[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]$1\r\n", RegexOptions.IgnoreCase);
+                //content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>http://[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "<img src='$1' />", RegexOptions.IgnoreCase);
                 //处理LK内链图
                 //将<ignore_js_op>中内容只保留img标签
-                content = Regex.Replace(content, @"<ignore_js_op>[\s\S]*?<img[\s\S]*?zoomfile=""?([\s\S]*?)""?\s[\s\S]*?>[\s\S]*?</ignore_js_op>", "\r\n[IMG]" + HOST + "$1\r\n", RegexOptions.IgnoreCase);
-                content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "\r\n[IMG]" + HOST + "", RegexOptions.IgnoreCase);
+                content = Regex.Replace(content, @"<ignore_js_op>[\s\S]*?<img[\s\S]*?zoomfile=""?([\s\S]*?)""?\s[\s\S]*?>[\s\S]*?</ignore_js_op>", "<img src='" + HOST + "$1' />", RegexOptions.IgnoreCase);
+                //content = Regex.Replace(content, @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "<img src='" + HOST + "$1'", RegexOptions.IgnoreCase);
 
                 content = base.NoHTML(content, HOST);
 

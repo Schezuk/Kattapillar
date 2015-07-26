@@ -33,6 +33,9 @@ namespace VShawnEpub.Wenku
                     string strBody = base.Epub.Capaters[i].Html;
                     strBody = getRegEx(strBody, @"<div id=""J_view"" class=""mt-20"">([\s\S]*?)<div class=""text-center mt-20"">", "$1");
                     strBody = Regex.Replace(strBody, @"<h2([\s\S]*?)>([\s\S]*?)</h3>", "");
+
+                    //文库中img标签的src为一个载入的gif图，真正路径为data-cover="/illustration/image/20150714/20150714141941_47044.jpg"
+                    strBody = Regex.Replace(strBody, @"<img\b[^<>]*?\bdata-cover[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>", "<img src='" + HOST + "$1' />", RegexOptions.IgnoreCase);
                     strBody = base.NoHTML(strBody, HOST);
                     base.Epub.Capaters[i].Txt = strBody;
                     base.AddPercentage(PercentageType.PageProcessed); 

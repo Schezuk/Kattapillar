@@ -226,6 +226,8 @@ namespace VShawnEpub
             Htmlstring = Htmlstring.Replace("\t", " ");
             Htmlstring = Htmlstring.Replace("\r", "");
             Htmlstring = Htmlstring.Replace("\n", "");
+
+            Htmlstring = Htmlstring.Replace("\n", "");
             Htmlstring = Regex.Replace(Htmlstring, "<br />", "\r\n");
             Htmlstring = Regex.Replace(Htmlstring, "</p>", "\r\n</p>");
             //Htmlstring = Regex.Replace(Htmlstring, "</div>", "\r\n</div>");
