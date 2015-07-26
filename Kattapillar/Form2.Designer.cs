@@ -1,6 +1,6 @@
 ﻿namespace Kattapillar
 {
-    partial class Form2
+    partial class Form2back
     {
         /// <summary>
         /// Required designer variable.
@@ -33,9 +33,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.tbUrl = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.OpneFileDown = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,14 +88,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(261, 21);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 12);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "label3";
             // 
             // label2
             // 
@@ -105,20 +106,31 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // label3
+            // label1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(261, 21);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 12);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "label3";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(24, 21);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "label1";
+            // 
+            // OpneFileDown
+            // 
+            this.OpneFileDown.Location = new System.Drawing.Point(599, 97);
+            this.OpneFileDown.Name = "OpneFileDown";
+            this.OpneFileDown.Size = new System.Drawing.Size(93, 23);
+            this.OpneFileDown.TabIndex = 5;
+            this.OpneFileDown.Text = "OpneFileDown";
+            this.OpneFileDown.UseVisualStyleBackColor = true;
+            this.OpneFileDown.Click += new System.EventHandler(this.OpneFileDown_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(756, 422);
+            this.Controls.Add(this.OpneFileDown);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tbUrl);
             this.Controls.Add(this.button2);
@@ -143,5 +155,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button OpneFileDown;
     }
 }

@@ -50,7 +50,16 @@
     <Compile Include="Class\EpubModel\Capater.cs" />
     <Compile Include="Class\EpubModel\EpubModel.cs" />
     <Compile Include="Class\EpubModel\Image.cs" />
+    <Compile Include="Class\FileDown\FileDown.cs" />
+    <Compile Include="Class\FileDown\FileDownDao.cs" />
+    <Compile Include="Class\FileDown\UtilTool.cs" />
     <Compile Include="Class\Version.cs" />
+    <Compile Include="FileDownWin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileDownWin.Designer.cs">
+      <DependentUpon>FileDownWin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +68,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FileDownWin.resx">
+      <DependentUpon>FileDownWin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>

@@ -12,11 +12,11 @@ using VShawnEpub.Wenku;
 
 namespace Kattapillar
 {
-    public partial class Form2 : Form
+    public partial class Form2back : Form
     {
         private VShawnEpub.Discuz.LKDiscuzBook lkdb;
         private VShawnEpub.Wenku.LKWenKuBook lkwkb; 
-        public Form2()
+        public Form2back()
         {
             InitializeComponent();
         }
@@ -115,6 +115,12 @@ namespace Kattapillar
                 }
             });
             t2.Start();
+        }
+
+        private void OpneFileDown_Click(object sender, EventArgs e)
+        {
+            FileDownWin fd = new FileDownWin();
+            fd.Show();
         }
     }
 }
