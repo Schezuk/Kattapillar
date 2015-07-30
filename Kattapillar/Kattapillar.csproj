@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSkin">
+      <HintPath>.\CSkin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +57,12 @@
     <Compile Include="Class\FileDown\FileDownDao.cs" />
     <Compile Include="Class\FileDown\UtilTool.cs" />
     <Compile Include="Class\Version.cs" />
+    <Compile Include="EpubGuide.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EpubGuide.Designer.cs">
+      <DependentUpon>EpubGuide.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileDownWin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +77,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EpubGuide.resx">
+      <DependentUpon>EpubGuide.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FileDownWin.resx">
       <DependentUpon>FileDownWin.cs</DependentUpon>
     </EmbeddedResource>
@@ -94,7 +106,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="射线3pix4pix.jpg" />
+    <Folder Include="epubForm\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

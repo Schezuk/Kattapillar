@@ -122,5 +122,32 @@ namespace Kattapillar
             FileDownWin fd = new FileDownWin();
             fd.Show();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            Thread t = new Thread(delegate()
+            {
+                //LK论坛
+                if (lkdb != null)
+                {
+                    lkdb.Start();
+                    while (lkdb.Status != BaseBook.BookStatus.Completed)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+                //LK文库
+                else if (lkwkb != null)
+                {
+                    lkwkb.Start();
+                    while (lkdb.Status != BaseBook.BookStatus.Completed)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+            });
+            t.Start();
+        }
     }
 }
